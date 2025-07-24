@@ -85,41 +85,6 @@ scikit-learn
 python
 Copy
 Edit
-# main.py
-from fastapi import FastAPI, File, UploadFile
-from wine_recognizer import identify_wine
-
-app = FastAPI()
-
-@app.post("/scan/")
-async def scan_wine_label(file: UploadFile = File(...)):
-    image = await file.read()
-    result = identify_wine(image)
-    return result
-Frontend (React Native)
-tsx
-Copy
-Edit
-// ScanScreen.tsx (simplified)
-import { launchCameraAsync } from 'expo-image-picker';
-
-const takePicture = async () => {
-  const result = await launchCameraAsync();
-  if (!result.cancelled) {
-    const formData = new FormData();
-    formData.append('file', {
-      uri: result.uri,
-      name: 'label.jpg',
-      type: 'image/jpeg',
-    });
-    const response = await fetch('https://your-api/scan/', {
-      method: 'POST',
-      body: formData,
-    });
-    const wineData = await response.json();
-    setWineResult(wineData);
-  }
-};
 
 🔮 Future Expansion Ideas:
 - AR wine label overlay (scan label → get live overlay info)
@@ -132,60 +97,6 @@ const takePicture = async () => {
 
 - Social feed for wine lovers
 
-
-// App.tsx
-import * as ImagePicker from 'expo-image-picker';
-
-export default function App() {
-  const [imageUri, setImageUri] = React.useState<string | null>(null);
-  const [result, setResult] = React.useState<any>(null);
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const localUri = result.assets[0].uri;
-      setImageUri(localUri);
-
-      const formData = new FormData();
-      formData.append('file', {
-        uri: localUri,
-        name: 'wine.jpg',
-        type: 'image/jpeg',
-      } as any);
-
-      const response = await fetch('http://localhost:8000/scan/', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      const data = await response.json();
-      setResult(data);
-    }
-  };
-
-  return (
-    <View className="flex-1 justify-center items-center bg-white">
-      <Button title="Scan Wine Label" onPress={pickImage} />
-      {imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />}
-      {result && (
-        <View className="mt-4">
-          <Text>Name: {result.name}</Text>
-          <Text>Region: {result.region}</Text>
-          <Text>Grape: {result.grape}</Text>
-          <Text>Tasting Notes: {result.notes}</Text>
-        </View>
-      )}
-    </View>
-  );
-}
 
 🧠 Backend (FastAPI)
 
@@ -201,34 +112,7 @@ import io
 app = FastAPI()
 
 # Enable CORS for mobile development
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-@app.post("/scan/")
-async def scan(file: UploadFile = File(...)):
-    image = Image.open(io.BytesIO(await file.read()))
-
-    # Dummy logic (replace with AI model + database lookup)
-    width, height = image.size
-    if width > 500:
-        return {
-            "name": "Château Margaux",
-            "region": "Bordeaux, France",
-            "grape": "Cabernet Sauvignon",
-            "notes": "Elegant, full-bodied with notes of blackcurrant and oak."
-        }
-    else:
-        return {
-            "name": "Barolo DOCG",
-            "region": "Piedmont, Italy",
-            "grape": "Nebbiolo",
-            "notes": "Complex with floral aromas and firm tannins."
-        }
 To run it locally:
 
 bash
