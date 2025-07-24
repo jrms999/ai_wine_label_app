@@ -1,8 +1,7 @@
 # ai_wine_label_app - Sommelier
-an ai tool to understand and validate wine labels
+An ai tool to understand and validate wine labels. Called Sommelier, this useful ai tool can decipher your wine labels and tell you things about the wine, its origin and its authenticity.
 
-
-Called Sommelier, this useful ai tool can decipher your wine labels and tell you things about the wine, its origin and its authenticity.
+- https://www.uksommelierassociation.com/about-courses
 
 
 🔧 1. Tech Stack Overview
